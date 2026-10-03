@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GitHub lookup</title>
+    <style>
+      body {
+        max-width: 600px;
+        margin: 40px auto;
+        padding: 0 16px;
+        font: 16px Arial, sans-serif;
+      }
+
+      input {
+        box-sizing: border-box;
+        width: 100%;
+        padding: 8px;
+        margin-top: 6px;
+      }
+
+      .buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 12px 0;
+      }
+
+      button {
+        padding: 8px 12px;
+        cursor: pointer;
+      }
+
+      li {
+        margin: 8px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>GitHub user</h1>
+    <label for="username">Username</label>
+    <input id="username" value="4iger3" placeholder="Enter a GitHub username" />
+
+    <div class="buttons">
+      <button type="button" data-kind="followers">Followers</button>
+      <button type="button" data-kind="repos">Repos</button>
+      <button type="button" data-kind="events">Events</button>
+      <button type="button" data-kind="gists">Gists</button>
+    </div>
+
+    <p id="status" role="status" aria-live="polite"></p>
+    <ul id="results"></ul>
+
+    <script>
+      const usernameInput = document.querySelector("#username");
+      const status = document.querySelector("#status");
+      const results = document.querySelector("#results");
+
+      document.querySelector(".buttons").addEventListener("click", async (event) => {
+        const button = event.target.closest("button[data-kind]");
+        if (!button) return;
+
+        const username = usernameInput.value.trim();
+        if (!username) {
+          status.textContent = "Enter a GitHub username.";
+          return;
+        }
+
+        const kind = button.dataset.kind;
+        status.textContent = "Loading...";
+        results.replaceChildren();
+
+        try {
+          const url = `https://api.github.com/users/${encodeURIComponent(username)}/${kind}`;
+          const response = await fetch(url);
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(data.message || "Request failed.");
+          }
+
+          status.textContent = data.length ? `${data.length} ${kind}` : `No ${kind} found.`;
+          data.forEach((entry) => {
+            const item = document.createElement("li");
+            const link = document.createElement("a");
+            let title;
+            let href;
+
+            if (kind === "followers") {
+              title = entry.login;
+              href = entry.html_url;
+            } else if (kind === "repos") {
+              title = entry.name;
+              href = entry.html_url;
+            } else if (kind === "events") {
+              title = `${entry.type}: ${entry.repo.name}`;
+              href = `https://github.com/${entry.repo.name}`;
+            } else {
+              title = entry.description || Object.keys(entry.files)[0] || "Untitled gist";
+              href = entry.html_url;
+            }
+
+            link.href = href;
+            link.target = "_blank";
+            link.rel = "noreferrer";
+            link.textContent = title;
+            item.append(link);
+
+            if (kind === "repos" && entry.description) {
+              item.append(document.createTextNode(` - ${entry.description}`));
+            }
+            results.append(item);
+          });
+        } catch (error) {
+          status.textContent = error.message.includes("rate limit")
+            ? "GitHub API limit reached. Try again later."
+            : "Could not load data. Check the username and try again.";
+        }
+      });
+    </script>
+  </body>
+</html>
