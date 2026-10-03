@@ -32,7 +32,66 @@
 				font: 16px/1.5 "Trebuchet MS", "Segoe UI", sans-serif;
 			}
 
+			.side-art {
+				position: fixed;
+				z-index: 0;
+				inset: 0;
+				overflow: hidden;
+				pointer-events: none;
+			}
+
+			.side-dragon {
+				position: absolute;
+				width: 180px;
+				height: auto;
+				opacity: 0.32;
+				mix-blend-mode: screen;
+			}
+
+			.side-dragon-left {
+				top: 23vh;
+				left: 8px;
+				transform: rotate(-9deg);
+			}
+
+			.side-dragon-right {
+				right: 8px;
+				bottom: 13vh;
+				width: 142px;
+				filter: invert(1) sepia(0.65) saturate(1.2);
+				opacity: 0.27;
+			}
+
+			.claw-marks {
+				position: absolute;
+				display: grid;
+				gap: 11px;
+				width: 80px;
+			}
+
+			.claw-marks span {
+				display: block;
+				height: 7px;
+				background: linear-gradient(90deg, transparent, var(--fire) 18% 78%, transparent);
+				clip-path: polygon(0 50%, 17% 0, 100% 28%, 84% 52%, 100% 72%, 16% 100%);
+				opacity: 0.76;
+			}
+
+			.claw-left {
+				top: 60%;
+				left: 12px;
+				transform: rotate(-45deg);
+			}
+
+			.claw-right {
+				top: 34%;
+				right: 12px;
+				transform: rotate(45deg) scaleX(-1);
+			}
+
 			.top-strip {
+				position: relative;
+				z-index: 1;
 				padding: 10px 16px;
 				border-bottom: 2px dashed #856540;
 				background: #342a20;
@@ -45,6 +104,8 @@
 			}
 
 			.site-shell {
+				position: relative;
+				z-index: 1;
 				width: min(1050px, calc(100% - 32px));
 				margin: 0 auto;
 				padding: 28px 0 50px;
@@ -58,7 +119,11 @@
 				padding: 34px clamp(22px, 7vw, 76px);
 				overflow: hidden;
 				border: 3px double #806442;
-				background: linear-gradient(120deg, rgba(24, 20, 16, 0.97), rgba(43, 31, 22, 0.92)), repeating-linear-gradient(45deg, #35291d 0 8px, #30251a 8px 16px);
+				background-image: linear-gradient(120deg, rgba(24, 20, 16, 0.88), rgba(43, 31, 22, 0.68)), url("assets/dragon-bestiary.jpg"), url("assets/rackham-dragon.jpg"), repeating-linear-gradient(45deg, #35291d 0 8px, #30251a 8px 16px);
+				background-position: center, right 12% bottom, right 2% top 8%, 0 0;
+				background-repeat: no-repeat;
+				background-size: cover, 220px auto, 150px auto, auto;
+				background-blend-mode: normal, multiply, multiply, normal;
 				box-shadow: 0 12px 45px #0008;
 			}
 
@@ -472,12 +537,20 @@
 				font-size: 0.72rem;
 			}
 
+			.site-footer a {
+				color: var(--gold);
+			}
+
 			@keyframes ominous-blink {
 				0%, 100% { opacity: 1; }
 				50% { opacity: 0.58; }
 			}
 
 			@media (max-width: 650px) {
+				.side-art {
+					display: none;
+				}
+
 				.site-shell {
 					width: min(100% - 20px, 520px);
 					padding-top: 12px;
@@ -486,6 +559,7 @@
 				.hero {
 					min-height: 300px;
 					padding: 72px 20px 26px;
+					background-size: cover, 150px auto, 100px auto, auto;
 				}
 
 				.fake-stamp {
@@ -542,6 +616,12 @@
 	</head>
 	<body>
 		<div class="top-strip">⚠️ Official-ish paperwork · Unofficially supervised by a wizard who is asleep ⚠️</div>
+		<div class="side-art" aria-hidden="true">
+			<img class="side-dragon side-dragon-left" src="assets/dragon-bestiary.jpg" alt="" />
+			<img class="side-dragon side-dragon-right" src="assets/rackham-dragon.jpg" alt="" />
+			<div class="claw-marks claw-left"><span></span><span></span><span></span></div>
+			<div class="claw-marks claw-right"><span></span><span></span><span></span></div>
+		</div>
 
 		<main class="site-shell">
 			<header class="hero">
@@ -723,7 +803,12 @@
 			</section>
 
 			<p class="last-word">Thank you for applying.<br /><strong>Your dragon will judge your application within 3–5 business centuries.</strong></p>
-			<footer class="site-footer">The Bad Idea Bureau · “We tried our best” · Best viewed from a safe distance</footer>
+			<footer class="site-footer">
+				The Bad Idea Bureau · “We tried our best” · Best viewed from a safe distance<br />
+				Dragon art: <a href="https://commons.wikimedia.org/wiki/File:A_dragon_ca._1270_Hugh_of_Fouilloy%27s_Bestiary.jpg" target="_blank" rel="noreferrer">Hugh of Fouilloy, c. 1270 (public domain)</a> ·
+				<a href="https://commons.wikimedia.org/wiki/File:Dragon_carrying_clothed_skeleton_Arthur_Rackham_Wellcome_L0051182_(cropped).jpg" target="_blank" rel="noreferrer">Arthur Rackham / Wellcome Collection</a>,
+				<a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer">CC BY 4.0</a>
+			</footer>
 		</main>
 	</body>
 </html>
